@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Generador de Imágenes</title>
+</head>
+<body>
+  <h1>Genera tu Imagen</h1>
+  <form id="textForm">
+    <label for="textInput">Introduce el texto:</label>
+    <input type="text" id="textInput" name="texto" required>
+    <button type="submit">Generar Imagen</button>
+  </form>
+  <div id="resultado">
+    <img id="imagenResultado" src="" alt="Imagen generada" style="display:none; margin-top:20px;">
+  </div>
+
+  <script>
+    document.getElementById('textForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const text = document.getElementById('textInput').value;
+      try {
+        // Reemplaza "tu-worker" por el subdominio de tu Cloudflare Worker
+        const response = await fetch(`https://tu-worker.workers.dev/?texto=${encodeURIComponent(text)}`);
+        if(response.ok) {
+          const blob = await response.blob();
+          const imgURL = URL.createObjectURL(blob);
+          const img = document.getElementById('imagenResultado');
+          img.src = imgURL;
+          img.style.display = 'block';
+        } else {
+          alert('Error al generar la imagen.');
+        }
+      } catch (error) {
+        console.error(error);
+        alert('Error en la conexión.');
+      }
+    });
+  </script>
+</body>
+</html>
